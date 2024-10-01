@@ -1,181 +1,83 @@
-import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+# To-Do List Application
+
+## Overview
+
+The To-Do List application is a simple and user-friendly tool built using Python's Tkinter library. It allows users to manage their tasks efficiently by adding, editing, deleting, and saving tasks to a file. The application provides a clean graphical interface, making it easy to interact with.
+
+## Features
+
+- Add new tasks to the list
+- Edit existing tasks
+- Delete tasks
+- Mark tasks as done or not done
+- Save tasks to a text file
+- Load tasks from a text file
+- Visual feedback for task status (color coding)
+
+## Requirements
+
+- Python 3.x
+- Tkinter library (comes pre-installed with Python)
+
+## Installation
+
+1. Clone the repository:
+    
+    ```
+    git clone https://github.com/mohdalipatel8976/ARKA_PY_01.git
+    ```
+    
+3. Navigate to the project directory:
+   ```
+   cd ARKA_PY_01
+   ``` 
+5. (Optional) Create a virtual environment and activate it:
+
+   ```
+   python -m venv venv
+   source venv/bin/activate   # On Windows use: venv\Scripts\activate
+   ```
+## Running the Application
+
+1. Run the application using Python:
+
+   ```
+   python main.py
+   ```
+2. The application window will appear, allowing you to manage your tasks.
+
+## Usage
+
+1. **Add Task:** Type a task in the input box and click "Add Task."
+2. **Edit Task:** Select a task and click "Edit Task" to modify it.
+3. **Delete Task:** Select a task and click "Delete Task" to remove it from the list.
+4. **Mark Done:** Select a task and click "Mark Done" to change its status.
+5. **Mark Not Done:** Select a task and click "Mark Not Done" to revert its status.
+6. **Save Tasks:** Click "Save Tasks" to save all tasks to a file.
+7. **Load Tasks:** Click "Load Tasks" to load tasks from a previously saved file.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Tkinter documentation for user interface elements.
+- Python community for support and resources.
+
+### Instructions to Add the README
+
+1. Create a new file named `README.md` in your project directory (where your `main.py` file is located).
+2. Copy the above content and paste it into the `README.md` file.
+3. Save the file.
+
+### Commit and Push the README to GitHub
+
+After creating and saving the README, you can commit and push it to your GitHub repository:
+
+git add README.md
+git commit -m "Add README file"
+git push origin main
 
 
-class ToDoListApp(tk.Tk):
-    def __init__(self):
-        super().__init__()
-
-        self.geometry("450x500")
-        self.title("To-Do List")
-        self.style = ttk.Style(self)
-        self.configure_styles()
-
-        self.create_widget()
-
-    def configure_styles(self):
-        self.style.configure("TButton",
-                             padding=6,
-                             relief="flat",
-                             background="#ccc",
-                             font=("Arial", 10))
-
-        self.style.map("TButton",
-                       foreground=[('pressed', 'black'), ('active', 'blue')],
-                       background=[('pressed', '!disabled', 'grey'), ('active', 'white')])
-
-        self.style.configure("TFrame", background="#f0f0f0")
-        self.style.configure("TLabelFrame", background="#f0f0f0")
-        self.style.configure("TLabel", background="#f0f0f0")
-
-    def create_widget(self):
-        task_frame = ttk.LabelFrame(self, text="New Task", padding=(10, 10))
-        task_frame.pack(pady=10, padx=10, fill="x")
-
-        self.task_input = ttk.Entry(task_frame, width=30)
-        self.task_input.pack(side="left", padx=(0, 10))
-
-        self.add_task_button = ttk.Button(task_frame, text="Add Task", command=self.add_task)
-        self.add_task_button.pack(side="left")
-
-        self.tasks_listbox = tk.Listbox(self,
-                                         selectmode=tk.SINGLE,
-                                         height=10,
-                                         font=("Arial", 12),
-                                         activestyle='none',
-                                         highlightthickness=0,
-                                         relief='flat')
-        self.tasks_listbox.pack(pady=10, padx=10, fill="both", expand=True)
-
-        button_frame = ttk.Frame(self)
-        button_frame.pack(pady=10)
-
-        self.edit_task_button = ttk.Button(button_frame, text="Edit Task", command=self.open_edit_dialog)
-        self.edit_task_button.grid(row=0, column=0, padx=5, pady=5)
-
-        self.delete_task_button = ttk.Button(button_frame, text="Delete Task", command=self.delete_task)
-        self.delete_task_button.grid(row=0, column=1, padx=5, pady=5)
-
-        self.mark_done_button = ttk.Button(button_frame, text="Mark Done", command=self.mark_done)
-        self.mark_done_button.grid(row=0, column=2, padx=5, pady=5)
-
-        self.mark_not_done_button = ttk.Button(button_frame, text="Mark Not Done", command=self.mark_not_done)
-        self.mark_not_done_button.grid(row=0, column=3, padx=5, pady=5)
-
-        self.save_button = ttk.Button(button_frame, text="Save Tasks", command=self.save_task)
-        self.save_button.grid(row=1, column=1, padx=5, pady=5)
-
-        self.load_button = ttk.Button(button_frame, text="Load Tasks", command=self.load_tasks)
-        self.load_button.grid(row=1, column=2, padx=5, pady=5)
-
-    def add_task(self):
-        task = self.task_input.get().strip()
-        if task:
-            self.tasks_listbox.insert(tk.END, task)
-            task_index = self.tasks_listbox.size() - 1
-            self.tasks_listbox.itemconfig(task_index, {'bg': 'yellow'})
-            self.task_input.delete(0, tk.END)
-        else:
-            messagebox.showwarning("Input Error", "Please enter a task.")
-
-    def open_edit_dialog(self):
-        try:
-            task_index = self.tasks_listbox.curselection()[0]
-            task_text = self.tasks_listbox.get(task_index)
-            task_bg = self.tasks_listbox.itemcget(task_index, 'bg')
-
-            edit_window = tk.Toplevel(self)
-            edit_window.title("Edit Task")
-            edit_window.grab_set()
-
-            x = self.winfo_x()
-            y = self.winfo_y()
-            edit_window.geometry(f"+{x + 100}+{y + 100}")
-
-            edit_label = ttk.Label(edit_window, text="Edit Task:")
-            edit_label.pack(pady=10)
-
-            edit_entry = ttk.Entry(edit_window, width=40)
-            edit_entry.insert(0, task_text)  
-            edit_entry.pack(pady=10)
-
-            def save_changes():
-                new_task = edit_entry.get().strip()
-                if new_task:
-                    self.tasks_listbox.delete(task_index)
-                    self.tasks_listbox.insert(task_index, new_task)
-                    self.tasks_listbox.itemconfig(task_index, {'bg': task_bg})  
-                    edit_window.destroy()
-                else:
-                    messagebox.showwarning("Input Error", "Please enter the updated task.")
-
-            save_button = ttk.Button(edit_window, text="Save", command=save_changes)
-            save_button.pack(pady=10)
-
-        except IndexError:
-            messagebox.showwarning("Selection Error", "Please select a task to edit.")
-
-    def delete_task(self):
-        try:
-            task_index = self.tasks_listbox.curselection()[0]
-        except IndexError:
-            messagebox.showwarning("Selection Error", "Please select a task to delete.")
-            return
-
-        confirm = messagebox.askyesno("Delete Confirmation", "Are you sure you want to delete the selected task?")
-        if confirm:
-            self.tasks_listbox.delete(task_index)
-
-    def mark_done(self):
-        try:
-            task_index = self.tasks_listbox.curselection()[0]
-            self.tasks_listbox.itemconfig(task_index, {'bg': 'light green'})
-        except IndexError:
-            messagebox.showwarning("Selection Error", "Please select a task to mark as done.")
-
-    def mark_not_done(self):
-        try:
-            task_index = self.tasks_listbox.curselection()[0]
-            self.tasks_listbox.itemconfig(task_index, {'bg': 'yellow'})
-        except IndexError:
-            messagebox.showwarning("Selection Error", "Please select a task to mark as not done.")
-
-    def save_task(self):
-        tasks = self.tasks_listbox.get(0, tk.END)
-        if not tasks:
-            messagebox.showwarning("Save Error", "No tasks to save.")
-            return
-
-        file_path = filedialog.asksaveasfilename(defaultextension='.txt',
-                                                 filetypes=[("Text Files", "*.txt")])
-        if file_path:
-            with open(file_path, 'w') as file:
-                for index, task in enumerate(tasks):
-                    status = self.tasks_listbox.itemcget(index, 'bg')
-                    file.write(f"{task}|{status}\n")
-            messagebox.showinfo("Save Success", "Tasks saved successfully!")
-
-    def load_tasks(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
-        if file_path:
-            with open(file_path, 'r') as file:
-                tasks = file.readlines()
-
-            self.tasks_listbox.delete(0, tk.END)
-            for line in tasks:
-                if '|' in line:
-                    task, status = line.strip().split('|', 1)
-                else:
-                    task = line.strip()
-                    status = 'yellow' 
-                self.tasks_listbox.insert(tk.END, task)
-                task_index = self.tasks_listbox.size() - 1
-                self.tasks_listbox.itemconfig(task_index, {'bg': status})
-            messagebox.showinfo("Load Success", "Tasks loaded successfully!")
-        else:
-            messagebox.showwarning("Load Error", "No file selected.")
-
-
-if __name__ == "__main__":
-    app = ToDoListApp()
-    app.mainloop()
+This will add the README to your repository, providing essential information about your To-Do List application. Let me know if you need any further assistance!
